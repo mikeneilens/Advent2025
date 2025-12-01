@@ -15,16 +15,18 @@ data class  Safe(val position:Int, val noOfZeros:Int, val part:String = "one", v
         Direction.Left to {qty:Int ->((position + dialSize - qty % 100) % 100)}
     )
 
-    fun Int.newSafe(qty:Int, direction: Direction) =
-        if (part == "one") Safe(this, updateZeroCountPartOne(newPosition = this))
-        else if (direction == Direction.Right) Safe(this, updateZeroCountPartTwoRight(qty), part)
-        else Safe(this, updateZeroCountPartTwoLeft(qty),part)
+    fun Int.newSafe(qty:Int, direction: Direction)= copy(position = this, noOfZeros + zeroCount(this, qty,direction))
 
-    fun updateZeroCountPartOne(newPosition:Int)  = if (newPosition == 0) noOfZeros + 1 else noOfZeros
+    fun zeroCount(newPosition:Int, qty:Int, direction: Direction) =
+        if (part == "one") updateZeroCountPartOne(newPosition)
+        else if (direction == Direction.Right) updateZeroCountPartTwoRight(qty)
+        else updateZeroCountPartTwoLeft(qty)
 
-    fun updateZeroCountPartTwoRight(qty:Int) = noOfZeros + (position + qty)/dialSize
+    fun updateZeroCountPartOne(newPosition:Int)  = if (newPosition == 0)  1 else 0
 
-    fun updateZeroCountPartTwoLeft(qty:Int) = noOfZeros + ((if (position > 0) (position - dialSize) else 0) - qty)/-dialSize
+    fun updateZeroCountPartTwoRight(qty:Int) = (position + qty)/dialSize
+
+    fun updateZeroCountPartTwoLeft(qty:Int) = ((if (position > 0) (position - dialSize) else 0) - qty)/-dialSize
 }
 
 fun day01(input:List<String>,part:String = "one") =
