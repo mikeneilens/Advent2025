@@ -6,7 +6,7 @@ enum class Direction{Left, Right}
 
 fun String.toDirection() = if (this == "L") Direction.Left else Direction.Right
 
-data class  Safe(val position:Int, val noOfZeros:Int, val part:String = "one", val dialSize:Int = 100) {
+data class  Dial(val position:Int, val noOfZeros:Int, val part:String = "one", val dialSize:Int = 100) {
 
     fun rotate(qty:Int, direction: Direction) = rotators.getValue(direction)(qty).newSafe(qty, direction)
 
@@ -30,8 +30,8 @@ data class  Safe(val position:Int, val noOfZeros:Int, val part:String = "one", v
 }
 
 fun day01(input:List<String>,part:String = "one") =
-    input.map(String::toRotation).fold(Safe(50,0,part)) { s,rotation ->
-        s.rotate(rotation.qty,rotation.direction)
+    input.map(String::toRotation).fold(Dial(50,0,part)) { dial, rotation ->
+        dial.rotate(rotation.qty,rotation.direction)
     }
 
 fun String.toRotation() = Rotation(drop(1).toInt(),take(1).toDirection())
