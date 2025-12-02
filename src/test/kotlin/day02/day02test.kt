@@ -4,14 +4,14 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 class day02test:StringSpec ({
-    "123 is a valid number" {
-        123L.isValid() shouldBe true
+    "123 is not a invalid number" {
+        123L.containsRepeatedNumber() shouldBe false
     }
-    "11 is not a valid number" {
-        11L.isValid() shouldBe false
+    "11 is an invalid number" {
+        "11".containsRepeatedString() shouldBe true
     }
-    "123123 is not a valid number" {
-        123123L.isValid() shouldBe false
+    "123123 is an invalid number" {
+        123123L.containsRepeatedNumber() shouldBe true
     }
     "invalid numbers in 11..22 are [11,22]" {
         (11L..22L).invalidNumbersInRange() shouldBe listOf(11L,22L)
@@ -54,6 +54,3 @@ class day02test:StringSpec ({
     }
 })
 
-fun Long.isValid() = toString().isValid()
-
-fun String.isValid() = (length % 2 == 1) || (take(length / 2) != takeLast(length/2))

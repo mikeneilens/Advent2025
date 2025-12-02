@@ -4,11 +4,11 @@ fun partOne(input:String) = input.parse().flatMap { it.invalidNumbersInRange()}.
 
 fun String.parse() = split(",").map{ it.split("-")[0].toLong()..it.split("-")[1].toLong()}
 
-fun LongRange.invalidNumbersInRange() = filter { !it.isValid() }
+fun LongRange.invalidNumbersInRange() = filter { it.containsRepeatedNumber() }
 
-fun Long.isValid() = toString().isValid()
+fun Long.containsRepeatedNumber() = toString().containsRepeatedString()
 
-fun String.isValid() = (length % 2 == 1) || (take(length / 2) != takeLast(length/2))
+fun String.containsRepeatedString() = (length % 2 == 0) && (take(length / 2) == takeLast(length/2))
 
 fun partTwo(input:String) = input.parse().flatMap { it.invalidNumbersInRange2()}.sum()
 
