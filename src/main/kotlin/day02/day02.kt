@@ -17,4 +17,5 @@ fun LongRange.invalidNumbersInRange2() = filter { it.containsRepeatingNumbers() 
 fun Long.containsRepeatingNumbers() = toString().containsRepeatingString()
 
 fun String.containsRepeatingString() =
-    (1..(length/2)).map{chunkSize -> chunked(chunkSize)}.filter{chunks:List<String> -> chunks.all{it == chunks.first()}}.size > 0
+    (1..(length / 2)).map { chunkSize -> chunked(chunkSize) }
+        .any { chunks: List<String> -> chunks.all { it == chunks.first() } }
