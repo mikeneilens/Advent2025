@@ -18,4 +18,4 @@ fun Long.containsRepeatingNumbers() = toString().containsRepeatingString()
 
 fun String.containsRepeatingString() =
     (1..(length / 2)).map { chunkSize -> chunked(chunkSize) }
-        .any { chunks -> chunks.all { it == chunks.first() } }
+        .any { chunks -> chunks.all { it == chunks[0] } }

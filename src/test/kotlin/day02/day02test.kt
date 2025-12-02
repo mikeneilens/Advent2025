@@ -8,7 +8,7 @@ class day02test:StringSpec ({
         123L.containsRepeatedNumber() shouldBe false
     }
     "11 is an invalid number" {
-        "11".containsRepeatedString() shouldBe true
+        11L.containsRepeatedNumber() shouldBe true
     }
     "123123 is an invalid number" {
         123123L.containsRepeatedNumber() shouldBe true
