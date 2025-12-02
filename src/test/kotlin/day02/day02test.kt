@@ -37,6 +37,21 @@ class day02test:StringSpec ({
     "part one" {
         partOne(puzzleInput) shouldBe 24043483400L
     }
+    "string 11 contains repeating strings" {
+        "11".containsRepeatingString() shouldBe true
+    }
+    "string 12 does not contain repeating strings" {
+        "12".containsRepeatingString() shouldBe false
+    }
+    "824824824 contains repeating strings" {
+        "824824824".containsRepeatingString() shouldBe true
+    }
+    "part two with sample data" {
+        partTwo(sampleInput) shouldBe 4174379265L
+    }
+    "part two" {
+        partTwo(puzzleInput) shouldBe 38262920235L
+    }
 })
 
 fun Long.isValid() = toString().isValid()
