@@ -14,7 +14,7 @@ class day02test:StringSpec ({
         123123L.containsRepeatedNumber() shouldBe true
     }
     "invalid numbers in 11..22 are [11,22]" {
-        (11L..22L).invalidNumbersInRange() shouldBe listOf(11L,22L)
+        invalidNumbersInRange((11L..22L)) shouldBe listOf(11L,22L)
     }
     "parse sample input" {
         sampleInput.parse() shouldBe listOf(
