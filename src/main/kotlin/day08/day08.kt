@@ -15,15 +15,15 @@ fun List<String>.toPoints() = map{ Point(it.split(",")[0].toLong(),it.split(",")
 
 fun makeCircuits(closestPoints:List<Pair<Point, Point>>, circuits:MutableList<MutableSet<Point>> = mutableListOf()):MutableList<MutableSet<Point>> {
     closestPoints.forEach { (p1,p2) ->
-        val p1Circuits = circuits.find { circuit ->  p1 in circuit }
-        val p2Circuits = circuits.find { circuit ->  p2 in circuit }
+        val p1Circuit = circuits.find { circuit ->  p1 in circuit }
+        val p2Circuit = circuits.find { circuit ->  p2 in circuit }
         when {
-            p1Circuits != null && p2Circuits != null -> {
-                circuits.joinCircuits(p1Circuits, p2Circuits)
+            p1Circuit != null && p2Circuit != null -> {
+                circuits.joinCircuits(p1Circuit, p2Circuit)
             }
-            p1Circuits == null && p2Circuits == null -> circuits.add(mutableSetOf(p1, p2))
-            p1Circuits == null -> p2Circuits?.add(p1)
-            p2Circuits == null -> p1Circuits?.add(p2)
+            p1Circuit == null && p2Circuit == null -> circuits.add(mutableSetOf(p1, p2))
+            p1Circuit == null -> p2Circuit?.add(p1)
+            p2Circuit == null -> p1Circuit.add(p2)
         }
     }
     return circuits
@@ -58,17 +58,15 @@ fun partTwo(input:List<String>):Long {
 
 fun makeCircuits2(closestPoints:List<Pair<Point, Point>>, noOfPoints:Int, circuits:MutableList<MutableSet<Point>> = mutableListOf()):Long {
     closestPoints.forEach { (p1,p2) ->
-        val p1Circuits = circuits.find { circuit ->  p1 in circuit }
-        val p2Circuits = circuits.find { circuit ->  p2 in circuit }
+        val p1Circuit = circuits.find { circuit ->  p1 in circuit }
+        val p2Circuit = circuits.find { circuit ->  p2 in circuit }
         when {
-            p1Circuits == null && p2Circuits == null -> circuits.add(mutableSetOf(p1, p2))
-            p1Circuits == null -> p2Circuits?.add(p1)
-            p2Circuits == null -> p1Circuits?.add(p2)
-            else -> {
-                circuits.remove(p1Circuits)
-                circuits.remove(p2Circuits)
-                circuits.add((p1Circuits + p2Circuits).toMutableSet())
+            p1Circuit != null && p2Circuit != null -> {
+                circuits.joinCircuits(p1Circuit, p2Circuit)
             }
+            p1Circuit == null && p2Circuit == null -> circuits.add(mutableSetOf(p1, p2))
+            p1Circuit == null -> p2Circuit?.add(p1)
+            p2Circuit == null -> p1Circuit.add(p2)
         }
         if (circuits.any{it.size == noOfPoints}) return p1.x * p2.x
     }
