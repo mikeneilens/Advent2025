@@ -26,7 +26,12 @@ class day08test:StringSpec ({
         partOne(sampledata, size = 10) shouldBe 40L
     }
     "part one with puzzle input" {
-        //38171 is too low
-        partOne(puzzleinput, size = 1000) shouldBe 40
+        partOne(puzzleinput, size = 1000) shouldBe 103488
+    }
+    "part two with sample data" {
+        partTwo(sampledata) shouldBe 25272L
+    }
+    "part two with puzzleinput" {
+        partTwo(puzzleinput) shouldBe 8759985540L
     }
 })
