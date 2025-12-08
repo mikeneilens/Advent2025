@@ -14,19 +14,21 @@ data class Point(val x:Long, val y:Long, val z:Long) {
 fun List<String>.toPoints() = map{ Point(it.split(",")[0].toLong(),it.split(",")[1].toLong(),it.split(",")[2].toLong()) }
 
 fun makeCircuits(closestPoints:List<Pair<Point, Point>>, circuits:MutableList<MutableSet<Point>> = mutableListOf()):MutableList<MutableSet<Point>> {
-    closestPoints.forEach { (p1,p2) ->
-        val p1Circuit = circuits.find { circuit ->  p1 in circuit }
-        val p2Circuit = circuits.find { circuit ->  p2 in circuit }
-        when {
-            p1Circuit != null && p2Circuit != null -> {
-                circuits.joinCircuits(p1Circuit, p2Circuit)
-            }
-            p1Circuit == null && p2Circuit == null -> circuits.add(mutableSetOf(p1, p2))
-            p1Circuit == null -> p2Circuit?.add(p1)
-            p2Circuit == null -> p1Circuit.add(p2)
-        }
-    }
+    closestPoints.forEach { (p1,p2) -> circuits.connectPoints(p1, p2) }
     return circuits
+}
+
+fun MutableList<MutableSet<Point>>.connectPoints(p1:Point, p2:Point) {
+    val p1Circuit = find { circuit ->  p1 in circuit }
+    val p2Circuit = find { circuit ->  p2 in circuit }
+    when {
+        p1Circuit != null && p2Circuit != null -> {
+            joinCircuits(p1Circuit, p2Circuit)
+        }
+        p1Circuit == null && p2Circuit == null -> add(mutableSetOf(p1, p2))
+        p1Circuit == null -> p2Circuit?.add(p1)
+        else -> p1Circuit.add(p2)
+    }
 }
 
 fun MutableList<MutableSet<Point>>.joinCircuits(c1:Set<Point>, c2:Set<Point>) {
@@ -56,18 +58,9 @@ fun partTwo(input:List<String>):Long {
     return makeCircuits2(closestToEachPoint,input.size)
 }
 
-fun makeCircuits2(closestPoints:List<Pair<Point, Point>>, noOfPoints:Int, circuits:MutableList<MutableSet<Point>> = mutableListOf()):Long {
+fun makeCircuits2(closestPoints:List<Pair<Point, Point>>, noOfPoints:Int, circuits:MutableList<MutableSet<Point>> = mutableListOf() ):Long {
     closestPoints.forEach { (p1,p2) ->
-        val p1Circuit = circuits.find { circuit ->  p1 in circuit }
-        val p2Circuit = circuits.find { circuit ->  p2 in circuit }
-        when {
-            p1Circuit != null && p2Circuit != null -> {
-                circuits.joinCircuits(p1Circuit, p2Circuit)
-            }
-            p1Circuit == null && p2Circuit == null -> circuits.add(mutableSetOf(p1, p2))
-            p1Circuit == null -> p2Circuit?.add(p1)
-            p2Circuit == null -> p1Circuit.add(p2)
-        }
+        circuits.connectPoints(p1, p2)
         if (circuits.any{it.size == noOfPoints}) return p1.x * p2.x
     }
     return 0L
