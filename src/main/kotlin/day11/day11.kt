@@ -1,6 +1,5 @@
 package day11
 
-
 fun partOne(input:List<String>) =  input.routes("you")
 
 fun String.outputDevices() = split(": ")[1].split(" ")
