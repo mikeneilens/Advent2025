@@ -10,4 +10,8 @@ class day09test:StringSpec( {
     "part one with puzzle input " {
         partOne(puzzleInput) shouldBe 4767418746L
     }
+
+    "part two with sample data" {
+        partTwo(sampledata) shouldBe 24
+    }
 })
