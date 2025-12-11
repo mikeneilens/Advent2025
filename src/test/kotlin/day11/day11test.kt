@@ -26,6 +26,6 @@ class day11test:StringSpec ({
         partTwo(sampledata2) shouldBe 2
     }
     "part two with puzzle input" {
-        partTwo(puzzleinput) shouldBe 2
+        partTwo(puzzleinput) shouldBe 367579641755680L
     }
 })
