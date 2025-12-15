@@ -1,7 +1,5 @@
 package day09
 
-import java.awt.Polygon
-import java.awt.geom.Rectangle2D
 import kotlin.collections.toIntArray
 import kotlin.math.abs
 
@@ -14,8 +12,18 @@ fun partOne(input:List<String>):Long {
     return max
 }
 
-data class Point(val row:Long, val col:Long) {
+data class Point(val col:Long, val row:Long) {
+    operator fun plus(other:Point) = Point(col + other.col, row + other.row)
+
     fun area(other:Point) = abs((row - other.row + 1L) * (col - other.col + 1L))
+
+    fun direction(other:Point) = when {
+        row == other.row && col < other.col -> "Right"
+        row == other.row && col > other.col -> "Left"
+        col == other.col && row < other.row -> "Down"
+        col == other.col && row > other.row -> "Up"
+        else -> ""
+    }
 }
 
 fun parse(input:List<String>) = input.map{Point(it.split(",")[0].toLong(),it.split(",")[1].toLong())}
@@ -24,32 +32,42 @@ fun List<Point>.biggestArea(index:Int, max:Long) = filter { get(index).area(it) 
 
 fun partTwo(input:List<String>):Long {
     val points = parse(input)
+    val outerLines = points.allOuterPoints().outerLines()
     var max = 0L
     points.indices.forEach { i ->
-        max = points.biggestArea2(i, max) ?: max
+        max = points.biggestArea3(i, max, outerLines) ?: max
     }
     return max
 }
 
-fun poly(points:List<Point>) = Polygon((points.map{it.row.toInt()}.toIntArray()), points.map{it.col.toInt()}.toIntArray(), points.size)
 
-fun rectangle(corner1:Point, corner2:Point) = Rectangle2D.Float().apply {
-    setFrame(corner1.row.toDouble(), corner1.col.toDouble(),
-        (abs(corner1.row - corner2.row) + 1).toDouble(),(abs(corner1.col - corner2.col) + 1).toDouble()  )
+fun List<Point>.biggestArea3(index:Int, max:Long, outerLines:List<Pair<Point, Point>>) = filter { p1 ->
+    val p2 = get(index)
+    //println("$p1, $p2 ${get(index).area(p1) > max  && !rectangleCrosses(p1,p2, outerLines)}")
+    get(index).area(p1) > max  && !rectangleCrosses(p1,p2, outerLines)}
+    .maxOfOrNull { get(index).area(it) }
+
+val cornerOffsets = mapOf(
+    "RightDown" to Point(+1, -1), "DownRight" to Point(+1, -1),
+    "LeftDown" to Point(+1, +1), "DownLeft" to Point(+1, +1),
+    "LeftUp" to Point(-1, +1), "UpLeft" to Point(-1, +1),
+    "RightUp" to Point(-1, -1), "UpRight" to Point(-1, -1),
+)
+
+fun rectangleCrosses(p1:Point, p2:Point, outerLines:List<Pair<Point, Point>>) =
+    outerLines.any{  it.first.col == it.second.col && it.first.col in minOf(p1.col, p2.col)..maxOf(p1.col,p2.col) && p1.row in it.first.row..it.second.row ||
+            it.first.row == it.second.row && it.first.row in minOf(p1.row,p2.row)..maxOf(p1.row,p2.row) && p1.col in it.first.col..it.second.col
+
 }
 
-fun List<Point>.biggestArea2(index:Int, max:Long):Long? {
-    val polygon = poly(this)
-    val p1 = Point(2,3)
-    val p2 = Point(7,5)
-    println("polygon contains rectangle $p1 $p2 ${polygon.contains(rectangle(p1,p2))}")
-    return filter { corner1 ->
-        val corner2 = get(index)
-        val rectangle = rectangle(corner1, corner2)
-        if ((corner2.area(corner1) > max) && (polygon.contains(rectangle))) {
-            println("polygon contains  ${polygon.contains(rectangle) }")
-            println("$corner1, $corner2")
-            true
-        } else false
-    }.maxOfOrNull { get(index).area(it) }
+fun List<Point>.outerLines() = mapIndexed{ndx, p -> Pair(p, get((ndx + 1) % size)) }
+    .map{ if(it.first.row == it.second.row && it.first.col <= it.second.col || it.first.col == it.second.col && it.first.row <= it.second.row) it else Pair(it.second, it.first)}
+
+fun List<Point>.allOuterPoints() = indices.map{outerPoint(it)}
+
+fun List<Point>.outerPoint(ndx:Int):Point {
+    val cornerType = get(ndx).direction( get((ndx + 1) % size)) + get((ndx + 1) % size).direction( get((ndx + 2) % size))
+    return  get((ndx + 1)% size) + cornerOffsets.getValue(cornerType)
 }
+
+//
