@@ -1,6 +1,5 @@
 package day09
 
-import kotlin.collections.toIntArray
 import kotlin.math.abs
 
 fun partOne(input:List<String>):Long {
@@ -54,14 +53,16 @@ val cornerOffsets = mapOf(
     "RightUp" to Point(-1, -1), "UpRight" to Point(-1, -1),
 )
 
-fun rectangleCrosses(p1:Point, p2:Point, outerLines:List<Pair<Point, Point>>) =
-    outerLines.any{  it.first.col == it.second.col && it.first.col in minOf(p1.col, p2.col)..maxOf(p1.col,p2.col) && p1.row in it.first.row..it.second.row ||
-            it.first.row == it.second.row && it.first.row in minOf(p1.row,p2.row)..maxOf(p1.row,p2.row) && p1.col in it.first.col..it.second.col
-
-}
+fun rectangleCrosses(p1:Point, p2:Point, outerLines:List<Pair<Point, Point>>): Boolean {
+    return outerLines.any{
+        it.first.col == it.second.col && it.first.col in minOf(p1.col,p2.col)..maxOf(p1.col,p2.col) && (p1.row in it.first.row..it.second.row || p2.row in it.first.row..it.second.row) ||
+        it.first.row == it.second.row && it.first.row in minOf(p1.row,p2.row)..maxOf(p1.row,p2.row) && (p1.col in it.first.col..it.second.col || p2.col in it.first.col..it.second.col)
+}}
 
 fun List<Point>.outerLines() = mapIndexed{ndx, p -> Pair(p, get((ndx + 1) % size)) }
-    .map{ if(it.first.row == it.second.row && it.first.col <= it.second.col || it.first.col == it.second.col && it.first.row <= it.second.row) it else Pair(it.second, it.first)}
+    .map{ (p1,p2) -> ordered(p1, p2) }
+
+fun ordered(p1:Point, p2:Point) = if(p1.row == p2.row && p1.col <= p2.col || p1.col == p2.col && p1.row <= p2.row) Pair(p1,p2) else Pair(p2, p1)
 
 fun List<Point>.allOuterPoints() = indices.map{outerPoint(it)}
 

@@ -47,6 +47,7 @@ class day09test:StringSpec( {
     }
     "part two with puzzle input" {
         //3083233140 is too high
+        //1461954456 is too low
         partTwo(puzzleInput) shouldBe 123
     }
 })
